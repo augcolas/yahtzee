@@ -91,7 +91,7 @@ function createDices(parent) {
         showAvailableCells(dices);
 
         //lock sections
-        $("td:last-child:not(.locked)").bind("click",function() 
+        $("td:last-child:not(.locked):not(.score)").bind("click",function() 
         {
             $(this).addClass("locked");
             calculScores();
@@ -312,7 +312,42 @@ function replay() {
     createDices(diceThrow);   
 }
 
-function calculScores(){  
+function calculScores(){ 
+
+    //left table sum
     let ST = $('#st');
-    
+    let sum = 0;
+
+    $.each(numbersList, function (index, id) { 
+        let cellValue = $('#'+id);
+        console.log(cellValue);
+        if($(cellValue).hasClass('locked')){
+            sum += parseInt($(cellValue).text()); 
+        }
+        
+    });
+    $(ST).text(sum);
+
+    let Prime = $('#prime');
+    if(sum >= 65){
+        $(Prime).text(35);
+    }
+    else{
+        $(Prime).text(0);
+    }
+
+    let Total = $('#diceTotal');
+    $(Total).text(parseInt($(ST).text()) + parseInt($(Prime).text()));
+
+
+    //right table sum
+    let combinaisons = $('.right td:last-child.locked:not(.score)');
+    let combSum = 0
+    $.each(combinaisons, function (indexInArray, comb) { 
+        combSum += parseInt($(comb).text());
+    });
+
+    $('#combineTotal1').text(combSum)
+
+    $('combineTotal2').text(parseInt($('#combineTotal1').text()) + parseInt($(Total).text()));
 }
